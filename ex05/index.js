@@ -3,16 +3,27 @@ module.exports = class Connection {
     // ##BEGIN## 代码已加密
     constructor () {
        this.event = new EventEmitter()
-    }
+       this.callbacks = []
 
-    onConn (fn) {
-        this.event.on('connection', (msg) => {
-            fn(msg)
+       this.event.on('connection', (...args) => {
+            this.run(...args)
         })
     }
 
-    connection (msg) {
-        this.event.emit('connection', msg)
+    onConn (fn) {
+        this.callbacks.push(fn)
+    }
+
+    connection (...args) {
+        this.event.emit('connection', ...args)
+    }
+
+    run (...args) {
+        this.callbacks.forEach(cb => {
+            if (typeof cb === 'function') {
+                cb(...args)
+            }
+        })
     }
     // ##END##
 }
