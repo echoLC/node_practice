@@ -1,4 +1,5 @@
 const crypto = require('crypto')
+
 module.exports.createToken = token => {
     const ary = token.split('.')
     if (ary.length !== 3) {
@@ -8,15 +9,15 @@ module.exports.createToken = token => {
     return {
         getExp: () => {
             // ##BEGIN## 代码已加密
-JEHJEHJEHJEHJEHJEHJEHJEHJEHJEHJEHJEHOSJOEEOESOEIOEAJEHOEPOOIOPPOEJOEEOOIOSOJEHJXIJEHJASOJSJAIJAXJHOOEPOOIOEXOEIOSSJPPOESOSSOPSJEHJIEOPJOSEOSEOSSOEXJHOOSEOEXOEEOEOJPPOOIOEXOPPOOOJHPOOEJPAJEHJPEOOAOOIOEIOSSJXJJHIJPEJPHJPH
-JEHJEHJEHJEHJEHJEHJEHJEHJEHJEHJEHJEHOEXOSSOEAOPJOEXOESJEHOEPOOIOPPOEJOEEOOIOSOJHOOSSOPEOEP
+            let payload = ary[1]
+            payload = JSON.parse(Buffer.from(payload, 'base64').toString())
+            return payload.exp
             // ##END##
         },
 
         verify: key => {
             const hmac = crypto.createHmac('SHA256', key).update(ary[0]+ '.' +  ary[1]).digest('base64');
             return hmac === ary[2] + '='
-            
         }
     }
 }
